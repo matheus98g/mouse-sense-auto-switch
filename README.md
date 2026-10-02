@@ -1,5 +1,7 @@
 # MouseSwitch
 
+> I created this simple script for myself to automatically switch the mouse sensitivity when I go from my external mouse to my laptop's trackpad (and back), so I don't have to change it in Windows settings every time.
+
 Automatically adjusts the pointer speed on **Windows 11** based on the device you are using: **mouse** or **trackpad**.
 
 Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. The switch happens instantly, with no clicks. A system tray icon shows the current mode and gives you manual control. Both speeds can be changed from the tray menu.
