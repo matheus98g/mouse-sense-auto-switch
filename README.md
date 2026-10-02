@@ -71,6 +71,7 @@ The only option still edited in the script is the device-name regex at the top o
 $DefaultMouseSpeed    = 12           # default mouse speed (1-20)
 $DefaultTrackpadSpeed = 20           # default trackpad speed (1-20)
 $MouseNameMatch = 'VID_|VID&'        # regex: device names that count as MOUSE
+$SwitchHoldMs = 300                  # idle time (ms) before switching to the other device
 ```
 
 ## How it works
@@ -91,9 +92,12 @@ Each `WM_INPUT` event carries the handle of the source device. The device name i
 
 When the device kind changes, the speed is applied with `SystemParametersInfo(SPI_SETMOUSESPEED)`. The call only happens when the kind changes, not on every movement.
 
+To avoid flip-flopping when both devices are used at the same time, MouseSwitch only switches once the current device has been idle for `$SwitchHoldMs` (300 ms by default). While both are moving, the current speed is kept.
+
 ## Troubleshooting
 
 - **Wrong classification**: open the menu and click **Show last device**, once using the mouse and once using the trackpad. Compare the names and adjust `$MouseNameMatch`. To match only your receiver, use its specific ID, e.g. `'VID_046D&PID_C52B'`.
+- **Switching feels too slow or too eager**: lower or raise `$SwitchHoldMs` at the top of the script.
 - **Trackpad still slow at 20**: precision touchpads have their own speed control in **Settings > Bluetooth & devices > Touchpad**, which stacks on top of this one.
 - **"MouseSwitch is already running"**: exit the existing instance from the menu (**Exit**) before starting it again.
 - **Script blocked**: the launcher already uses `-ExecutionPolicy Bypass`. If the file came from the internet, right-click it, open **Properties** and check **Unblock**.
