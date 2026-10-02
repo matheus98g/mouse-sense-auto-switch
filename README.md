@@ -46,6 +46,7 @@ Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. T
 | `src/MouseSwitch.cs` | The whole app: tray icon, detection, speed switching and settings. |
 | `build.cmd` | Compiles `src/MouseSwitch.cs` into `bin\MouseSwitch.exe`. |
 | `.github/workflows/release.yml` | Builds the exe on GitHub and attaches it to a release when a `v*` tag is pushed. |
+| `.github/workflows/build.yml` | Builds every pull request and attaches the exe as a downloadable artifact for testing. |
 
 ## Installation
 
