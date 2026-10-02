@@ -1,74 +1,103 @@
 # MouseSwitch
 
-Ajusta automaticamente a velocidade do ponteiro no **Windows 11** conforme o dispositivo em uso: **mouse** ou **trackpad**.
+Automatically adjusts the pointer speed on **Windows 11** based on the device you are using: **mouse** or **trackpad**.
 
-Mexeu no mouse, a velocidade vai para 12. Encostou no trackpad, vai para 20. A troca acontece na hora, sem clicar em nada. Um ícone na bandeja do sistema mostra o modo atual e permite controle manual.
+Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. The switch happens instantly, with no clicks. A system tray icon shows the current mode and gives you manual control. Both speeds can be changed from the tray menu.
 
-## Funcionalidades
+## Features
 
-- **Detecção automática** do dispositivo que está gerando a entrada, via Raw Input API do Windows.
-- **Ícone na bandeja** com o modo atual:
-  - 🔵 azul `12` = mouse · 🟢 verde `20` = trackpad
-  - **círculo** = modo automático · **quadrado** = modo manual
-- **Clique esquerdo** no ícone alterna o modo manualmente e pausa o automático.
-- **Menu do clique direito**: Automático, Mouse, Trackpad, Ver último dispositivo, Sair.
-- **Diagnóstico**: o item "Ver último dispositivo" mostra o nome do dispositivo que clicou no menu e como ele foi classificado.
-- A configuração é **persistente**: grava no registro do Windows, como o Painel de Controle faz.
-- **Instância única**: avisa se já houver uma cópia rodando.
-- Sem dependências. É só PowerShell (nativo do Windows) com um trecho em C# compilado em tempo de execução.
+- **Automatic detection** of the device generating input, via the Windows Raw Input API.
+- **Configurable speeds**: the defaults are **12** (mouse) and **20** (trackpad). You can change them from **Settings...** in the tray menu.
+- **Automatic / Manual switch**: in Automatic mode the speed follows the device you are using. In Manual mode it stays on whatever you picked.
+- **Start with Windows**: one click in the menu, no admin rights needed.
+- **Tray icon** showing the current mode:
+  - 🔵 blue = mouse · 🟢 green = trackpad (the number is the current speed)
+  - **circle** = automatic mode · **square** = manual mode
+- **Left-click** the icon to toggle mouse/trackpad manually. This also switches to Manual mode.
+- **Diagnostics**: **Show last device** displays the name of the device that clicked the menu and how it was classified.
+- **Persistent settings**: speeds and mode are saved in `%APPDATA%\MouseSwitch\settings.json`. The pointer speed itself is written to the registry, just like the Control Panel does.
+- **Single instance**: warns you if a copy is already running.
+- No dependencies. It is just PowerShell (built into Windows) plus a small C# snippet compiled at runtime.
 
-## Arquivos
+## Tray menu (right-click)
 
-| Arquivo | Descrição |
+| Item | Action |
 |---|---|
-| `MouseSwitch.ps1` | Script principal com o ícone na bandeja, a detecção e a troca de velocidade. |
-| `MouseSwitch.vbs` | Launcher que abre o script sem mostrar a janela do console. |
+| Mode: Automatic / Mode: Manual | Switch between automatic detection and manual control |
+| Mouse (N) / Trackpad (N) | Apply that speed now (switches to Manual) |
+| Settings... | Opens the settings dialog |
+| Start with Windows | Toggles launching MouseSwitch at sign-in |
+| Show last device | Shows the last detected device name and its classification |
+| Exit (stop MouseSwitch) | Removes the tray icon and fully stops the script |
 
-## Instalação
+### Settings dialog
 
-1. Baixe `MouseSwitch.ps1` e `MouseSwitch.vbs` e coloque os dois **na mesma pasta** (ex.: `C:\Tools\MouseSwitch`).
-2. Dê dois cliques em `MouseSwitch.vbs`.
-3. *(Opcional)* Para deixar o ícone sempre visível, arraste-o da seta `^` para a barra de tarefas, ou ative em **Configurações > Personalização > Barra de tarefas > Outros ícones da bandeja**.
-4. *(Opcional)* Para iniciar com o Windows, pressione `Win + R`, digite `shell:startup` e crie ali um **atalho** para o `MouseSwitch.vbs`.
+- **Mouse speed** and **Trackpad speed** (1–20, the same scale as the Windows "Pointer speed" slider)
+- **Automatic switching** (the same Auto/Manual switch as in the menu)
+- **Start with Windows**
+- **Restore defaults** sets 12 / 20 / automatic. Click **Save** to apply.
 
-## Configuração
+## Files
 
-As opções ficam no topo do `MouseSwitch.ps1`:
+| File | Description |
+|---|---|
+| `MouseSwitch.ps1` | Main script: tray icon, detection, speed switching and settings. |
+| `MouseSwitch.vbs` | Launcher that starts the script without showing a console window. |
 
-```powershell
-$MouseSpeed    = 12           # velocidade no mouse (1-20)
-$TrackpadSpeed = 20           # velocidade no trackpad (1-20)
-$MouseNameMatch = 'VID_|VID&' # regex: nomes de dispositivo que contam como MOUSE
+## Installation
+
+1. Download `MouseSwitch.ps1` and `MouseSwitch.vbs` and put both **in the same folder** (e.g. `C:\Tools\MouseSwitch`).
+2. Double-click `MouseSwitch.vbs`.
+3. *(Optional)* Right-click the tray icon and enable **Start with Windows**.
+4. *(Optional)* To keep the icon always visible, drag it from the `^` overflow onto the taskbar, or enable it in **Settings > Personalization > Taskbar > Other system tray icons**.
+
+> Start with Windows writes a `MouseSwitch` entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` that points to the `.vbs` in its current folder. If you move the files, turn the option off and back on.
+
+## Configuration
+
+Speeds, mode and startup are all set from the tray menu. Settings are stored in:
+
+```
+%APPDATA%\MouseSwitch\settings.json
 ```
 
-A escala de 1 a 20 é a mesma do controle "Velocidade do ponteiro" do Windows.
+Delete that file to reset to the defaults.
 
-## Como funciona
+The only option still edited in the script is the device-name regex at the top of `MouseSwitch.ps1`:
 
-O script cria uma janela oculta e se registra na **Raw Input API** (`RegisterRawInputDevices`) para dois tipos de entrada:
+```powershell
+$DefaultMouseSpeed    = 12           # default mouse speed (1-20)
+$DefaultTrackpadSpeed = 20           # default trackpad speed (1-20)
+$MouseNameMatch = 'VID_|VID&'        # regex: device names that count as MOUSE
+```
 
-- **Mouse genérico** (Usage Page `0x01`, Usage `0x02`)
-- **Touchpad de precisão** (Usage Page `0x0D`, Usage `0x05`)
+## How it works
 
-Cada evento `WM_INPUT` traz o *handle* do dispositivo de origem. O nome do dispositivo é obtido com `GetRawInputDeviceInfo` e classificado assim:
+The script creates a hidden window and registers with the **Raw Input API** (`RegisterRawInputDevices`) for two input types:
 
-| Situação | Classificação |
+- **Generic mouse** (Usage Page `0x01`, Usage `0x02`)
+- **Precision touchpad** (Usage Page `0x0D`, Usage `0x05`)
+
+Each `WM_INPUT` event carries the handle of the source device. The device name is read with `GetRawInputDeviceInfo` and classified like this:
+
+| Situation | Classification |
 |---|---|
-| Evento HID do touchpad de precisão | Trackpad |
-| Movimento sem dispositivo associado (sintetizado pelo touchpad de precisão) | Trackpad |
-| Nome casa com `$MouseNameMatch` (`VID_` = USB, inclusive receptores sem fio · `VID&` = Bluetooth) | Mouse |
-| Qualquer outro (ex.: touchpad interno I2C, `HID#VEN_...`) | Trackpad |
+| HID event from the precision touchpad | Trackpad |
+| Movement with no associated device (synthesized by the precision touchpad) | Trackpad |
+| Name matches `$MouseNameMatch` (`VID_` = USB, including wireless receivers · `VID&` = Bluetooth) | Mouse |
+| Anything else (e.g. internal I2C touchpad, `HID#VEN_...`) | Trackpad |
 
-Quando o tipo muda, a velocidade é aplicada com `SystemParametersInfo(SPI_SETMOUSESPEED)`. A chamada só acontece na mudança de tipo, não a cada movimento.
+When the device kind changes, the speed is applied with `SystemParametersInfo(SPI_SETMOUSESPEED)`. The call only happens when the kind changes, not on every movement.
 
-## Solução de problemas
+## Troubleshooting
 
-- **Classificação errada**: abra o menu e clique em **Ver último dispositivo**, uma vez usando o mouse e outra usando o trackpad. Compare os nomes e ajuste `$MouseNameMatch`. Para casar só com o seu receptor, use o identificador específico dele, ex.: `'VID_046D&PID_C52B'`.
-- **Trackpad ainda lento no 20**: touchpads de precisão têm um controle de velocidade próprio em **Configurações > Bluetooth e dispositivos > Touchpad**, que se soma a esse.
-- **"O MouseSwitch já está rodando"**: feche a instância anterior pelo menu (**Sair**) antes de abrir de novo.
-- **Script bloqueado**: o launcher já usa `-ExecutionPolicy Bypass`. Se o arquivo veio da internet, clique com o botão direito nele, vá em **Propriedades** e marque **Desbloquear**.
+- **Wrong classification**: open the menu and click **Show last device**, once using the mouse and once using the trackpad. Compare the names and adjust `$MouseNameMatch`. To match only your receiver, use its specific ID, e.g. `'VID_046D&PID_C52B'`.
+- **Trackpad still slow at 20**: precision touchpads have their own speed control in **Settings > Bluetooth & devices > Touchpad**, which stacks on top of this one.
+- **"MouseSwitch is already running"**: exit the existing instance from the menu (**Exit**) before starting it again.
+- **Script blocked**: the launcher already uses `-ExecutionPolicy Bypass`. If the file came from the internet, right-click it, open **Properties** and check **Unblock**.
+- **Debugging**: run `powershell -NoProfile -STA -File MouseSwitch.ps1` from a console to see any errors.
 
-## Requisitos
+## Requirements
 
-- Windows 10 ou 11
-- Windows PowerShell 5.1 (já vem instalado)
+- Windows 10 or 11
+- Windows PowerShell 5.1 (preinstalled)
