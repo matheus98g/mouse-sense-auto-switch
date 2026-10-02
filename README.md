@@ -1,132 +1,133 @@
-# MouseSwitch
+# 🖱️ MouseSwitch
 
-> I created this simple script for myself to automatically switch the mouse sensitivity when I go from my external mouse to my laptop's trackpad (and back), so I don't have to change it in Windows settings every time.
+Automatically switches your mouse sensitivity when you move between your **external mouse** and **laptop trackpad**.
 
-Automatically adjusts the pointer speed on **Windows 11** based on the device you are using: **mouse** or **trackpad**.
+No need to change Windows settings manually. Just move your mouse or touch the trackpad, and MouseSwitch adjusts the speed instantly.
 
-Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. The switch happens instantly, with no clicks. A system tray icon shows the current mode and gives you manual control. Both speeds can be changed from the tray menu.
+🔵 **Mouse:** 12
+🟢 **Trackpad:** 20
 
-## Features
+Both speeds are customizable.
 
-- **Automatic detection** of the device generating input, via the Windows Raw Input API.
-- **Configurable speeds**: the defaults are **12** (mouse) and **20** (trackpad). You can change them from **Settings...** in the tray menu.
-- **Automatic / Manual switch**: in Automatic mode the speed follows the device you are using. In Manual mode it stays on whatever you picked.
-- **Start with Windows**: one click in the menu, no admin rights needed.
-- **Tray icon** showing the current mode:
-  - 🔵 blue = mouse · 🟢 green = trackpad (the number is the current speed)
-  - **circle** = automatic mode · **square** = manual mode
-- **Left-click** the icon to toggle mouse/trackpad manually. This also switches to Manual mode.
-- **Diagnostics**: **Show last device** displays the name of the device that clicked the menu and how it was classified.
-- **Persistent settings**: speeds and mode are saved in `%APPDATA%\MouseSwitch\settings.json`. The pointer speed itself is written to the registry, just like the Control Panel does.
-- **Single instance**: warns you if a copy is already running.
-- **Lightweight native app**: a single small `MouseSwitch.exe` with no dependencies, built with the C# compiler that ships with Windows (.NET Framework 4.x).
+## ✨ Features
 
-## Tray menu (right-click)
+* 🔄 **Automatic switching:** Detects whether you're using a mouse or trackpad.
+* 🎚️ **Custom sensitivity:** Set different pointer speeds for each device.
+* 🖱️ **Manual mode:** Choose your preferred device and keep its speed.
+* 🚀 **Start with Windows:** Launch automatically when you sign in.
+* 📌 **System tray:** Control everything from the Windows taskbar.
+* 💾 **Persistent settings:** Your preferences are saved automatically.
+* ⚡ **Lightweight:** A single executable with no additional dependencies.
+* 🔍 **Device diagnostics:** Check which device was detected.
+* 🔒 **Single instance:** Prevents multiple copies from running.
 
-| Item | Action |
-|---|---|
-| Mode: Automatic / Mode: Manual | Switch between automatic detection and manual control |
-| Mouse (N) / Trackpad (N) | Apply that speed now (switches to Manual) |
-| Settings... | Opens the settings dialog |
-| Start with Windows | Toggles launching MouseSwitch at sign-in |
-| Show last device | Shows the last detected device name and its classification |
-| Exit (stop MouseSwitch) | Removes the tray icon and fully stops the app |
+## 📸 How it works
 
-### Settings dialog
+| Device       | Default speed | Indicator |
+| ------------ | ------------: | --------- |
+| 🖱️ Mouse    |            12 | 🔵 Blue   |
+| 🖲️ Trackpad |            20 | 🟢 Green  |
 
-- **Mouse speed** and **Trackpad speed** (1–20, the same scale as the Windows "Pointer speed" slider)
-- **Automatic switching** (the same Auto/Manual switch as in the menu)
-- **Start with Windows**
-- **Restore defaults** sets 12 / 20 / automatic. Click **Save** to apply.
+The tray icon displays the current speed. A circle indicates automatic mode, while a square indicates manual mode.
 
-## Files
+**Left-click** the tray icon to switch devices manually. Right-click to access the full menu.
 
-| File | Description |
-|---|---|
-| `src/MouseSwitch.cs` | The whole app: tray icon, detection, speed switching and settings. |
-| `build.cmd` | Compiles `src/MouseSwitch.cs` into `bin\MouseSwitch.exe`. |
-| `.github/workflows/release.yml` | Builds the exe on GitHub and attaches it to a release when a `v*` tag is pushed. |
-| `.github/workflows/build.yml` | Builds every pull request and attaches the exe as a downloadable artifact for testing. |
+## 📥 Installation
 
-## Installation
+1. Download **MouseSwitch.exe** from the [latest release](../../releases/latest).
+2. Place it anywhere on your computer.
+3. Double-click the executable to start.
+4. (Optional) Enable **Start with Windows** from the tray menu.
 
-1. Download `MouseSwitch.exe` from the [latest release](../../releases/latest). It is built by GitHub Actions straight from the source in this repo.
-2. Put it wherever you like (e.g. `C:\Tools\MouseSwitch`) and double-click it. Windows may show a SmartScreen warning because the exe is not code-signed (see [Troubleshooting](#troubleshooting)).
-3. *(Optional)* Right-click the tray icon and enable **Start with Windows**.
-4. *(Optional)* To keep the icon always visible, drag it from the `^` overflow onto the taskbar, or enable it in **Settings > Personalization > Taskbar > Other system tray icons**.
+> ⚠️ Windows SmartScreen may display a warning because the executable is not code-signed. See [Troubleshooting](#-troubleshooting).
 
-> Start with Windows writes a `MouseSwitch` entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` that points to `MouseSwitch.exe` in its current folder. If you move the exe, turn the option off and back on.
+## ⚙️ Settings
 
-> **Upgrading from the PowerShell version**: exit the old tray icon, then start `MouseSwitch.exe`. Your settings are kept, and if Start with Windows was on, the entry is updated to point to the exe automatically. The old `.ps1`/`.vbs` files can be deleted.
+Right-click the tray icon to access the following options:
 
-### Building from source
+| Option                | Description                                              |
+| --------------------- | -------------------------------------------------------- |
+| 🔄 Automatic / Manual | Switch between automatic and manual modes.               |
+| 🖱️ Mouse             | Apply the configured mouse speed.                        |
+| 🖲️ Trackpad          | Apply the configured trackpad speed.                     |
+| ⚙️ Settings           | Customize speeds and preferences.                        |
+| 🚀 Start with Windows | Enable or disable automatic startup.                     |
+| 🔍 Show last device   | Display the last detected device and its classification. |
+| ❌ Exit                | Completely close MouseSwitch.                            |
 
-Clone the repo and double-click `build.cmd`. It creates `bin\MouseSwitch.exe` in a second using the C# compiler included with Windows, with nothing to install.
+### 🎚️ Customize sensitivity
 
-### Publishing a release
+The settings dialog lets you configure:
 
-Push a version tag. The workflow builds the exe and creates the release with it attached:
+* Mouse speed (1–20)
+* Trackpad speed (1–20)
+* Automatic switching
+* Start with Windows
+* Restore default settings (12 / 20)
+
+## 🛠️ Build from source
+
+MouseSwitch is written in **C#** and uses the compiler included with Windows.
+
+No additional dependencies or build tools are required.
+
+```bash
+git clone https://github.com/matheus98g/mouse-sense-auto-switch.git
+cd mouse-sense-auto-switch
+```
+
+Run `build.cmd` to compile the application.
+
+The executable will be generated at:
+
+```text
+bin/MouseSwitch.exe
 
 ```
-git tag v1.0.0
-git push origin v1.0.0
-```
 
-## Configuration
+## 💾 Configuration
 
-Speeds, mode and startup are all set from the tray menu. Settings are stored in:
+Settings are stored locally at:
 
-```
+```text
 %APPDATA%\MouseSwitch\settings.json
 ```
 
-Delete that file to reset to the defaults.
+Delete this file to restore the default settings.
 
-Two advanced options are not in the dialog and can be edited directly in that file (exit MouseSwitch first, then start it again). They are written the first time settings are saved; you can also add them yourself:
+Advanced options can also be edited manually:
 
-```json
-{
-    "MouseSpeed":  12,
-    "TrackpadSpeed":  20,
-    "Auto":  true,
-    "MouseNameMatch":  "VID_|VID&",
-    "SwitchHoldMs":  300
-}
-```
+| Option           | Default      | Description                                         |
+| ---------------- | ------------ | --------------------------------------------------- |
+| `MouseNameMatch` | `VID_\|VID&` | Regex used to identify mouse devices.               |
+| `SwitchHoldMs`   | `300`        | Idle time in milliseconds before switching devices. |
 
-- `MouseNameMatch`: regex for device names that count as MOUSE. An invalid regex falls back to the default.
-- `SwitchHoldMs`: idle time (ms) before switching to the other device.
+Exit MouseSwitch before editing these settings.
 
-## How it works
+## 🔧 Troubleshooting
 
-MouseSwitch creates a hidden window and registers with the **Raw Input API** (`RegisterRawInputDevices`) for two input types:
+**❓ The wrong device is detected**
 
-- **Generic mouse** (Usage Page `0x01`, Usage `0x02`)
-- **Precision touchpad** (Usage Page `0x0D`, Usage `0x05`)
+Use **Show last device** in the tray menu to inspect the device name. You can adjust `MouseNameMatch` in the configuration file to customize mouse detection.
 
-Each `WM_INPUT` event carries the handle of the source device. The device name is read with `GetRawInputDeviceInfo` and classified like this:
+**🐢 Switching feels too slow**
 
-| Situation | Classification |
-|---|---|
-| HID event from the precision touchpad | Trackpad |
-| Movement with no associated device (synthesized by the precision touchpad) | Trackpad |
-| Name matches `MouseNameMatch` (`VID_` = USB, including wireless receivers · `VID&` = Bluetooth) | Mouse |
-| Anything else (e.g. internal I2C touchpad, `HID#VEN_...`) | Trackpad |
+Adjust `SwitchHoldMs`. Lower values make switching more responsive, while higher values help prevent unwanted switches.
 
-When the device kind changes, the speed is applied with `SystemParametersInfo(SPI_SETMOUSESPEED)`. The call only happens when the kind changes, not on every movement.
+**🖲️ The trackpad is still slow at speed 20**
 
-To avoid flip-flopping when both devices are used at the same time, MouseSwitch only switches once the current device has been idle for `SwitchHoldMs` (300 ms by default). While both are moving, the current speed is kept.
+Precision touchpads have their own speed setting in Windows. Check **Settings → Bluetooth & devices → Touchpad**.
 
-## Troubleshooting
+**⚠️ MouseSwitch is already running**
 
-- **Wrong classification**: open the menu and click **Show last device**, once using the mouse and once using the trackpad. Compare the names and adjust `MouseNameMatch` in `settings.json`. To match only your receiver, use its specific ID, e.g. `"VID_046D&PID_C52B"`.
-- **Switching feels too slow or too eager**: lower or raise `SwitchHoldMs` in `settings.json`.
-- **Trackpad still slow at 20**: precision touchpads have their own speed control in **Settings > Bluetooth & devices > Touchpad**, which stacks on top of this one.
-- **"MouseSwitch is already running"**: exit the existing instance from the menu (**Exit**) before starting it again.
-- **"Windows protected your PC"** (SmartScreen): the exe is not code-signed. Click **More info > Run anyway**, or build it yourself with `build.cmd`. If the file came from the internet you can also right-click it, open **Properties** and check **Unblock**.
-- **Errors**: unexpected errors are shown in a message box with the full details.
+Close the existing instance using **Exit** in the tray menu before launching another.
 
-## Requirements
+**🛡️ Windows protected your PC**
 
-- Windows 10 or 11
-- .NET Framework 4.x (preinstalled on Windows 10 and 11)
+The executable is not code-signed. If you trust the source, select **More info → Run anyway**. Alternatively, build it yourself using `build.cmd`.
+
+## 💻 Requirements
+
+* Windows 10 or Windows 11
+* .NET Framework 4.x (included with Windows)
+* An external mouse and/or a laptop trackpad
