@@ -45,17 +45,31 @@ Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. T
 |---|---|
 | `src/MouseSwitch.cs` | The whole app: tray icon, detection, speed switching and settings. |
 | `build.cmd` | Compiles `src/MouseSwitch.cs` into `bin\MouseSwitch.exe`. |
+| `.github/workflows/release.yml` | Builds the exe on GitHub and attaches it to a release when a `v*` tag is pushed. |
 
 ## Installation
 
-1. Clone or download the repo and double-click `build.cmd`. It creates `bin\MouseSwitch.exe` in a second, with nothing to install.
-2. Copy `MouseSwitch.exe` wherever you like (e.g. `C:\Tools\MouseSwitch`) and double-click it.
+1. Download `MouseSwitch.exe` from the [latest release](../../releases/latest). It is built by GitHub Actions straight from the source in this repo.
+2. Put it wherever you like (e.g. `C:\Tools\MouseSwitch`) and double-click it. Windows may show a SmartScreen warning because the exe is not code-signed (see [Troubleshooting](#troubleshooting)).
 3. *(Optional)* Right-click the tray icon and enable **Start with Windows**.
 4. *(Optional)* To keep the icon always visible, drag it from the `^` overflow onto the taskbar, or enable it in **Settings > Personalization > Taskbar > Other system tray icons**.
 
 > Start with Windows writes a `MouseSwitch` entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` that points to `MouseSwitch.exe` in its current folder. If you move the exe, turn the option off and back on.
 
 > **Upgrading from the PowerShell version**: exit the old tray icon, then start `MouseSwitch.exe`. Your settings are kept, and if Start with Windows was on, the entry is updated to point to the exe automatically. The old `.ps1`/`.vbs` files can be deleted.
+
+### Building from source
+
+Clone the repo and double-click `build.cmd`. It creates `bin\MouseSwitch.exe` in a second using the C# compiler included with Windows, with nothing to install.
+
+### Publishing a release
+
+Push a version tag. The workflow builds the exe and creates the release with it attached:
+
+```
+git tag v1.0.0
+git push origin v1.0.0
+```
 
 ## Configuration
 
