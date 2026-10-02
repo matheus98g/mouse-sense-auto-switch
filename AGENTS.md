@@ -11,7 +11,6 @@ Guidance for coding agents working in this repository.
 - `src/MouseSwitch.cs`: the whole app in one file. It is a WinForms tray app (`ApplicationContext`) that uses the Raw Input API and `SystemParametersInfo`.
 - `build.cmd`: compiles it into `bin\MouseSwitch.exe` (`bin/` is git-ignored; the exe is never committed).
 - `.github/workflows/release.yml`: on a pushed `v*` tag, runs `build.cmd` on `windows-latest` and attaches the exe to a GitHub release. Distribute only through releases.
-- `.github/workflows/build.yml`: builds every pull request (read-only) and uploads the exe as an artifact.
 - User settings live in `%APPDATA%\MouseSwitch\settings.json`, never in the repo.
 - Start with Windows uses the `HKCU\...\CurrentVersion\Run` value `MouseSwitch`, pointing to the exe. Old values pointing to `MouseSwitch.vbs` are migrated at launch.
 
