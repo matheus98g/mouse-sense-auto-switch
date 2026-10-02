@@ -43,13 +43,13 @@ Move the mouse and the speed goes to 12. Touch the trackpad and it goes to 20. T
 
 | File | Description |
 |---|---|
-| `MouseSwitch.ps1` | Main script: tray icon, detection, speed switching and settings. |
-| `MouseSwitch.vbs` | Launcher that starts the script without showing a console window. |
+| `src/MouseSwitch.ps1` | Main script: tray icon, detection, speed switching and settings. |
+| `src/MouseSwitch.vbs` | Launcher that starts the script without showing a console window. |
 
 ## Installation
 
-1. Download `MouseSwitch.ps1` and `MouseSwitch.vbs` and put both **in the same folder** (e.g. `C:\Tools\MouseSwitch`).
-2. Double-click `MouseSwitch.vbs`.
+1. Download `MouseSwitch.ps1` and `MouseSwitch.vbs` from the `src` folder and put both **in the same folder** (e.g. `C:\Tools\MouseSwitch`).
+2. Double-click `MouseSwitch.vbs`. (Or just clone the repo and run `src\MouseSwitch.vbs`.)
 3. *(Optional)* Right-click the tray icon and enable **Start with Windows**.
 4. *(Optional)* To keep the icon always visible, drag it from the `^` overflow onto the taskbar, or enable it in **Settings > Personalization > Taskbar > Other system tray icons**.
 
@@ -65,7 +65,7 @@ Speeds, mode and startup are all set from the tray menu. Settings are stored in:
 
 Delete that file to reset to the defaults.
 
-The only option still edited in the script is the device-name regex at the top of `MouseSwitch.ps1`:
+The only option still edited in the script is the device-name regex at the top of `src/MouseSwitch.ps1`:
 
 ```powershell
 $DefaultMouseSpeed    = 12           # default mouse speed (1-20)
@@ -101,7 +101,7 @@ To avoid flip-flopping when both devices are used at the same time, MouseSwitch 
 - **Trackpad still slow at 20**: precision touchpads have their own speed control in **Settings > Bluetooth & devices > Touchpad**, which stacks on top of this one.
 - **"MouseSwitch is already running"**: exit the existing instance from the menu (**Exit**) before starting it again.
 - **Script blocked**: the launcher already uses `-ExecutionPolicy Bypass`. If the file came from the internet, right-click it, open **Properties** and check **Unblock**.
-- **Debugging**: run `powershell -NoProfile -STA -File MouseSwitch.ps1` from a console to see any errors.
+- **Debugging**: run `powershell -NoProfile -STA -File src\MouseSwitch.ps1` from a console to see any errors.
 
 ## Requirements
 

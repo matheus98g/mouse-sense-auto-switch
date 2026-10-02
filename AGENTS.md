@@ -8,8 +8,8 @@ Guidance for coding agents working in this repository.
 
 ## Project layout
 
-- `MouseSwitch.ps1`: the main script. It is a tray app written in PowerShell with an embedded C# block (`Add-Type`) for the Raw Input API and `SystemParametersInfo`.
-- `MouseSwitch.vbs`: the launcher. It starts the script hidden, without a console window.
+- `src/MouseSwitch.ps1`: the main script. It is a tray app written in PowerShell with an embedded C# block (`Add-Type`) for the Raw Input API and `SystemParametersInfo`.
+- `src/MouseSwitch.vbs`: the launcher. It starts the script hidden, without a console window.
 - User settings live in `%APPDATA%\MouseSwitch\settings.json`, never in the repo.
 - Start with Windows uses the `HKCU\...\CurrentVersion\Run` value `MouseSwitch`.
 
@@ -22,5 +22,5 @@ Guidance for coding agents working in this repository.
 ## Running for debugging
 
 ```
-powershell -NoProfile -STA -File MouseSwitch.ps1
+powershell -NoProfile -STA -File src\MouseSwitch.ps1
 ```
